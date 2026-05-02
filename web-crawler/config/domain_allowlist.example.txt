@@ -1,0 +1,2 @@
+# Optional: one domain suffix or hostname pattern per line for filtering (e.g. .edu, .gov).
+# Copy to domain_allowlist.txt and adjust; wire into crawler settings when implemented.
