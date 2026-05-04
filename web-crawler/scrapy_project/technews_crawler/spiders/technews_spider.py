@@ -74,7 +74,6 @@ def _seed_host_rules(seed_urls: list[str]) -> list[str]:
             hosts.append(h)
     return list(dict.fromkeys(hosts))
 
-
 class TechnewsSpider(scrapy.Spider):
     name = "tech_news"
 
@@ -151,6 +150,13 @@ class TechnewsSpider(scrapy.Spider):
         with self._page_lock:
             return not self._limit_reached and self._pages_crawled < self.max_pages
 
+    def _should_skip_url(self, url: str) -> bool:
+        path = urlparse(url).path.lower()
+        return any(path.endswith(f".{ext}") for ext in [
+            "pdf", "jpg", "jpeg", "png", "gif", "svg",
+            "mp4", "mp3", "zip", "doc", "docx"
+        ])
+
     def parse(self, response: Response):
         depth = int(response.meta.get("depth", 0))
 
@@ -173,6 +179,7 @@ class TechnewsSpider(scrapy.Spider):
                 status=response.status,
                 content_type=ctype,
                 body=response.body,
+                title=response.css("title::text").get(default=""),
             )
 
         if not self._should_follow_links():
@@ -199,6 +206,8 @@ class TechnewsSpider(scrapy.Spider):
                 continue
             seen_on_page.add(joined)
 
+            if self._should_skip_url(joined):
+                continue
             if not self._url_allowed(joined):
                 continue
 

@@ -7,3 +7,4 @@ class CrawledPage(scrapy.Item):
     status = scrapy.Field()
     content_type = scrapy.Field()
     body = scrapy.Field()
+    title = scrapy.Field()
