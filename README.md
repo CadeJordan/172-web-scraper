@@ -1,12 +1,34 @@
 # 172-web-scraper
 Web scraper project UCR CS 172 
 
-requirements: 
-pip install scrapy
+# Dataset
+- total size: 672MB (2,000 HTML files)
+- sample size: 2.8 MB under sample_output folder
 
-files:
-1. spiders/technews_spider.py - crawler
-2. items.py - data structure
-3. pipelines.py - saves html to disk
-4. settings.py - config
-5. seeds.txt - starting URLS
+# Requirements: 
+- pip install scrapy
+- Python 3.10+
+
+# Important files & descriptions:
+1. scrapy_project/technews_crawler/spiders/technews_spider.py - crawler
+2. scrapy_project/technews_crawler/items.py - data structure
+3. scrapy_project/technews_crawler/pipelines.py - saves html to disk
+4. scrapy_project/technews_crawler/settings.py - config
+5. data/seeds.txt - starting URLS
+6. crawler.sh / crawler.bat - runs crawler
+
+# How to Run on Linux
+1. cd into scrapy_project folder
+
+2. run this command to start crawling
+
+bash ../crawler.sh ../data/seeds.txt 2000 6 ../output
+
+3. to see how much data was collected
+
+du -sh ~/172-web-scraper/web-crawler/output
+
+4. to check how many files (2000)
+
+ls ~/172-web-scraper/web-crawler/output | wc -l
+
