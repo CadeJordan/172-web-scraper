@@ -5,8 +5,6 @@
 # Example:
 #   ./crawler.sh data/seed.txt 10000 6 output/html
 
-#!/bin/bash
-# Usage: ./crawler.sh <seed_file> <max_pages> <max_depth> <output_dir>
 SEED_FILE=${1:-seeds.txt}
 MAX_PAGES=${2:-10000}
 MAX_DEPTH=${3:-6}

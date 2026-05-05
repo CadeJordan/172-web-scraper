@@ -17,18 +17,22 @@ Web scraper project UCR CS 172
 5. data/seeds.txt - starting URLS
 6. crawler.sh / crawler.bat - runs crawler
 
-# How to Run on Linux
+# How to Run 
 1. cd into scrapy_project folder
 
 2. run this command to start crawling
 
+Linux:
 bash ../crawler.sh ../data/seeds.txt 2000 6 ../output
+
+Windows:
+crawler.bat ..\data\seeds.txt 2000 6 ..\output
 
 3. to see how much data was collected
 
-du -sh ~/172-web-scraper/web-crawler/output
+du -sh ../output
 
 4. to check how many files (2000)
 
-ls ~/172-web-scraper/web-crawler/output | wc -l
+ls ../output | wc -l
 
