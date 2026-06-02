@@ -36,3 +36,16 @@ du -sh ../output
 
 ls ../output | wc -l
 
+## Run the Flask app
+
+1. Create a Python virtual environment.
+2. Install dependencies:
+   - `pip install -r requirements.txt`
+3. Ensure PyLucene index exists at `./index`.
+4. Start the server:
+   - `python app.py`
+5. Open:
+   - `http://localhost:5000`
+
+Search endpoint: `GET /api/search?q=<query>`
+Returns top 10 results ordered by descending score.
