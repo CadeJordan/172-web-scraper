@@ -72,25 +72,47 @@
     const meta = document.getElementById("meta");
     const error = document.getElementById("error");
 
-    function renderResults(results) {
-      results.innerHTML = "";
-      meta.textContent = `Showing ${results.length} result(s).`;
+    function appendTextElement(parent, tagName, className, text) {
+      const element = document.createElement(tagName);
+      if (className) {
+        element.className = className;
+      }
+      element.textContent = text;
+      parent.appendChild(element);
+      return element;
+    }
 
-      for (const item of results) {
+    function renderResults(searchResults) {
+      results.innerHTML = "";
+      meta.textContent = `Showing ${searchResults.length} result(s).`;
+
+      for (const item of searchResults) {
         const dateValue = item.date ?? "N/A";
         const title = item.title || "(untitled)";
         const url = item.url || "";
-        const score = Number(item.score).toFixed(5);
+        const score = Number(item.score || 0).toFixed(5);
 
         const row = document.createElement("div");
         row.className = "result";
-        row.innerHTML = `
-          <div class="score">Score: ${score}</div>
-          <div class="title">${title}</div>
-          <div><a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a></div>
-          <div class="muted">Date: ${dateValue}</div>
-          <div class="muted">Document ID: ${item.documentId}</div>
-        `;
+
+        appendTextElement(row, "div", "score", `Score: ${score}`);
+        appendTextElement(row, "div", "title", title);
+
+        const linkWrapper = document.createElement("div");
+        const link = document.createElement("a");
+        link.href = url || "#";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = url;
+        linkWrapper.appendChild(link);
+        row.appendChild(linkWrapper);
+
+        if (item.snippet) {
+          appendTextElement(row, "div", "muted", `Snippet: ${item.snippet}`);
+        }
+        appendTextElement(row, "div", "muted", `Date: ${dateValue}`);
+        appendTextElement(row, "div", "muted", `Document ID: ${item.documentId}`);
+
         results.appendChild(row);
       }
     }
