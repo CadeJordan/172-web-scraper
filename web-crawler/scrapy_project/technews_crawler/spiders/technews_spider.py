@@ -172,6 +172,7 @@ class TechnewsSpider(scrapy.Spider):
                 self._pages_crawled += 1
                 if self._pages_crawled >= self.max_pages:
                     self._limit_reached = True
+                    self.crawler.engine.close_spider(self, 'closespider_pagecount')
 
             yield CrawledPage(
                 url=response.url,
