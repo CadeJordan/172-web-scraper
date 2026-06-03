@@ -17,31 +17,41 @@ Web scraper project UCR CS 172
 5. data/seeds.txt - starting URLS
 6. crawler.sh / crawler.bat - runs crawler
 
-# How to Run 
-1. cd into scrapy_project folder
+# How to Run
 
-2. run this command to start crawling
+## Crawl
 
-Linux:
-bash ../crawler.sh ../data/seeds.txt 2000 6 ../output
+1. cd into `web-crawler/scrapy_project`
 
-Windows:
-crawler.bat ..\data\seeds.txt 2000 6 ..\output
-
-3. to see how much data was collected
-
-du -sh ../output
-
-4. to check how many files (2000)
-
-ls ../output | wc -l
-
-## Build the PyLucene index
-
-Run these commands from `web-crawler` after the crawler has written HTML files to `output/html`.
+2. Run this command to start crawling:
 
 Linux/macOS:
 ```bash
+bash ../crawler.sh ../data/seeds.txt 2000 6 ../output/html
+```
+
+Windows:
+```bat
+crawler.bat ..\data\seeds.txt 2000 6 ..\output\html
+```
+
+3. To see how much data was collected:
+```bash
+du -sh ../output
+```
+
+4. To check how many files (should be ~2000):
+```bash
+ls ../output/html | wc -l
+```
+
+## Build the PyLucene Index
+
+Run these commands from `web-crawler`:
+
+Linux/macOS:
+```bash
+chmod +x indexer.sh
 ./indexer.sh output/html index
 ```
 
@@ -50,22 +60,25 @@ Windows:
 indexer.bat output\html index
 ```
 
-You can also run the default index build directly:
+Or run directly:
 ```bash
-python indexer.py
+python3 indexer.py
 ```
 
-## Run the Flask search app
+## Run the Flask Search App
 
-1. Install the Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+1. Install Python dependencies from `web-crawler`:
+```bash
+pip3 install -r requirements.txt
+```
+
 2. Make sure the PyLucene index exists at `web-crawler/index`.
+
 3. Start the server from `web-crawler`:
-   ```bash
-   python app.py
-   ```
-4. Open `http://localhost:5000`.
+```bash
+python3 app.py
+```
+
+4. Open `http://class-057.cs.ucr.edu:8080` in your browser.
 
 The search endpoint is `GET /api/search?q=<query>`. It returns the top 10 PyLucene results in decreasing score order with title, URL/file id, date when available, document id, score, and an extra-credit snippet generated from the stored body text.

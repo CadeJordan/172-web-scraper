@@ -145,11 +145,12 @@ def _make_snippet(text, query, max_length=SNIPPET_LENGTH):
         snippet = snippet + "..."
     return snippet
 
-
 def search(query, top_n=10, index_dir=DEFAULT_INDEX_DIR):
     query = (query or "").strip()
     if not query:
         return []
+
+    from org.apache.lucene.queryparser.classic import QueryParser
 
     deps = _ensure_vm()
     analyzer = deps["StandardAnalyzer"]()
@@ -158,9 +159,8 @@ def search(query, top_n=10, index_dir=DEFAULT_INDEX_DIR):
 
     try:
         searcher = deps["IndexSearcher"](reader)
-        fields = ["title", "body"]
-        parser = deps["MultiFieldQueryParser"](fields, analyzer)
-        lucene_query = parser.parse(deps["QueryParser"].escape(query))
+        parser = QueryParser("body", analyzer)
+        lucene_query = parser.parse(query)
         hits = searcher.search(lucene_query, top_n).scoreDocs
 
         results = []
@@ -180,7 +180,6 @@ def search(query, top_n=10, index_dir=DEFAULT_INDEX_DIR):
         return results
     finally:
         reader.close()
-
 
 if __name__ == "__main__":
     build_index()

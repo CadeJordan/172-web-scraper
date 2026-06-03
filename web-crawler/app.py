@@ -1,17 +1,18 @@
 from flask import Flask, jsonify, render_template, request
-
+import lucene
 from indexer import search
 
 app = Flask(__name__)
+lucene.initVM()
 
 
 @app.get("/")
 def home():
     return render_template("search.html")
 
-
 @app.get("/api/search")
 def search_api():
+    lucene.getVMEnv().attachCurrentThread()
     query = request.args.get("q", "").strip()
     if not query:
         return jsonify({"results": []})
@@ -24,4 +25,4 @@ def search_api():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=8080)

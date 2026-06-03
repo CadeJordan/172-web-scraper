@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 test_output/
 crawled_pages/
+web-crawler/sample_output/
+web-crawler/output/html/
+web-crawler/index/
