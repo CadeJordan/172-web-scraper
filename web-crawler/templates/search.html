@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Tech News Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem auto;
+      max-width: 900px;
+      line-height: 1.4;
+      padding: 0 1rem;
+    }
+    .row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 0.55rem;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.55rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .meta {
+      color: #333;
+      margin-bottom: 0.8rem;
+    }
+    .result {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 0.8rem;
+      margin-bottom: 0.6rem;
+    }
+    .score {
+      font-weight: 700;
+    }
+    .title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .muted {
+      color: #666;
+      font-size: 0.95rem;
+    }
+    #error {
+      color: #b00020;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tech News Search</h1>
+  <div class="row">
+    <input id="query" type="text" placeholder="Enter query">
+    <button id="searchButton" type="button">Search</button>
+  </div>
+
+  <div id="error"></div>
+  <div id="meta" class="meta"></div>
+  <div id="results"></div>
+
+  <script>
+    const queryInput = document.getElementById("query");
+    const searchButton = document.getElementById("searchButton");
+    const results = document.getElementById("results");
+    const meta = document.getElementById("meta");
+    const error = document.getElementById("error");
+
+    function appendTextElement(parent, tagName, className, text) {
+      const element = document.createElement(tagName);
+      if (className) {
+        element.className = className;
+      }
+      element.textContent = text;
+      parent.appendChild(element);
+      return element;
+    }
+
+    function renderResults(searchResults) {
+      results.innerHTML = "";
+      meta.textContent = `Showing ${searchResults.length} result(s).`;
+
+      for (const item of searchResults) {
+        const dateValue = item.date ?? "N/A";
+        const title = item.title || "(untitled)";
+        const url = item.url || "";
+        const score = Number(item.score || 0).toFixed(5);
+
+        const row = document.createElement("div");
+        row.className = "result";
+
+        appendTextElement(row, "div", "score", `Score: ${score}`);
+        appendTextElement(row, "div", "title", title);
+
+        const linkWrapper = document.createElement("div");
+        const link = document.createElement("a");
+        link.href = url || "#";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = url;
+        linkWrapper.appendChild(link);
+        row.appendChild(linkWrapper);
+
+        if (item.snippet) {
+          appendTextElement(row, "div", "muted", `Snippet: ${item.snippet}`);
+        }
+        appendTextElement(row, "div", "muted", `Date: ${dateValue}`);
+        appendTextElement(row, "div", "muted", `Document ID: ${item.documentId}`);
+
+        results.appendChild(row);
+      }
+    }
+
+    async function runSearch() {
+      const q = queryInput.value.trim();
+      error.textContent = "";
+      results.innerHTML = "";
+      meta.textContent = "";
+
+      if (!q) {
+        error.textContent = "Enter a query.";
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Search failed.");
+        }
+        renderResults(data.results || []);
+      } catch (err) {
+        error.textContent = err.message || "Search failed.";
+      }
+    }
+
+    searchButton.addEventListener("click", runSearch);
+    queryInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        runSearch();
+      }
+    });
+  </script>
+</body>
+</html>

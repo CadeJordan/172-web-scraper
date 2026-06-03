@@ -36,3 +36,36 @@ du -sh ../output
 
 ls ../output | wc -l
 
+## Build the PyLucene index
+
+Run these commands from `web-crawler` after the crawler has written HTML files to `output/html`.
+
+Linux/macOS:
+```bash
+./indexer.sh output/html index
+```
+
+Windows:
+```bat
+indexer.bat output\html index
+```
+
+You can also run the default index build directly:
+```bash
+python indexer.py
+```
+
+## Run the Flask search app
+
+1. Install the Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Make sure the PyLucene index exists at `web-crawler/index`.
+3. Start the server from `web-crawler`:
+   ```bash
+   python app.py
+   ```
+4. Open `http://localhost:5000`.
+
+The search endpoint is `GET /api/search?q=<query>`. It returns the top 10 PyLucene results in decreasing score order with title, URL/file id, date when available, document id, score, and an extra-credit snippet generated from the stored body text.
