@@ -2,7 +2,7 @@
 Web scraper project UCR CS 172 
 
 # Dataset
-- total size: 672MB (2,000 HTML files)
+- total size: ~700 MB (2,000 HTML files)
 - sample size: 2.8 MB under sample_output folder
 
 # Requirements: 
